@@ -1,17 +1,42 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import Gamepad from 'react-gamepad'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+ReactDOM.render(<Main />,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+function Main() {
+  const [log, setLog] = useState([])
+
+  const updateLog = (msg) => {
+    const logger = log;
+    logger.push(<li>{msg}</li>)
+    if (logger.length >= 6) {
+      logger.splice(0, 1)
+    }
+    setLog([...logger])
+  }
+
+  const connectHandler = (gamepadIndex) => {
+    updateLog('Gamepad ' + gamepadIndex + ' connected!')
+  }
+
+  const buttonChange = (buttonName, down) => {
+    if (down) {
+      updateLog('' + buttonName + ' was pressed!')
+    }
+  }
+
+  return (
+    <>
+    <Gamepad 
+      onConnect={connectHandler}
+      onButtonChange={buttonChange}
+    ><h1>Welcome To Gamepad Interactor</h1></Gamepad>
+    <ul>
+      {log}
+    </ul>
+    </>
+  )
+}
